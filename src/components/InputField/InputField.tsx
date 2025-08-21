@@ -90,7 +90,7 @@ const InputField: React.FC<InputFieldProps> = ({
     const baseStyles = `${baseSizeStyles} transition-colors`;
     
     if (disabled) {
-      return `${baseStyles} text-gray-500 cursor-not-allowed ${
+      return `${baseStyles} text-gray-500 px-4 cursor-not-allowed ${
         variant === 'filled' ? 'bg-gray-200 border-0' :
         variant === 'ghost' ? 'bg-transparent border-0 border-b border-gray-200' :
         'bg-gray-100 border border-gray-200 rounded-md shadow-sm'

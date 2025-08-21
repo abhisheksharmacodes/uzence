@@ -25,11 +25,15 @@ const sampleUsers: User[] = [
 const DemoApp: React.FC = () => {
   // InputField states
   const [searchValue, setSearchValue] = useState('');
-  const [emailValue, setEmailValue] = useState('');
+  const [demoEmailValue, setDemoEmailValue] = useState('');
+  const [demoEmailError, setDemoEmailError] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [nameValue, setNameValue] = useState('');
+  const [demoNameValue, setDemoNameValue] = useState('');
+  const [demoNameError, setDemoNameError] = useState('');
   
   // Form validation states
+  const [emailValue, setEmailValue] = useState('');
   const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
   
@@ -39,24 +43,20 @@ const DemoApp: React.FC = () => {
   const [currentData, setCurrentData] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
-  // Filter users based on search
-  React.useEffect(() => {
-    console.log('useEffect triggered - currentData:', currentData, 'searchValue:', searchValue);
-    if (searchValue.trim() === '') {
-      console.log('Setting filteredUsers to currentData:', currentData);
-      setFilteredUsers(currentData);
-    } else {
-      const filtered = currentData.filter(user =>
-        user.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      console.log('Setting filteredUsers to filtered:', filtered);
-      setFilteredUsers(filtered);
-    }
-  }, [searchValue, currentData]);
 
-  // Email validation
+  // Demo email validation
+  const validateDemoEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setDemoEmailError('Email is required');
+    } else if (!emailRegex.test(email)) {
+      setDemoEmailError('Please enter a valid email address');
+    } else {
+      setDemoEmailError('');
+    }
+  };
+
+  // Form email validation
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
@@ -71,6 +71,17 @@ const DemoApp: React.FC = () => {
   useEffect(()=>{
     setFilteredUsers(currentData)
   },[currentData])
+
+  // Demo name validation (isolated from form)
+  const validateDemoName = (name: string) => {
+    if (!name.trim()) {
+      setDemoNameError('Name is required');
+    } else if (name.trim().length < 2) {
+      setDemoNameError('Name must be at least 2 characters');
+    } else {
+      setDemoNameError('');
+    }
+  };
 
   // Name validation
   const validateName = (name: string) => {
@@ -182,12 +193,12 @@ const DemoApp: React.FC = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-3">Search (Ghost Variant)</h3>
               <InputField
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={() => {}}
                 label="Search Users"
                 placeholder="Search by name, email, or role..."
                 variant="ghost"
                 size="md"
-                helperText="Search will filter the table below"
+                helperText="Demo input - type to test functionality"
               />
             </div>
 
@@ -195,19 +206,19 @@ const DemoApp: React.FC = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-3">Email (Outlined with Validation)</h3>
               <InputField
-                value={emailValue}
+                value={demoEmailValue}
                 onChange={(e) => {
-                  setEmailValue(e.target.value);
-                  validateEmail(e.target.value);
+                  setDemoEmailValue(e.target.value);
+                  validateDemoEmail(e.target.value);
                 }}
                 label="Email Address"
                 type="email"
                 placeholder="Enter your email"
                 variant="outlined"
                 size="md"
-                invalid={!!emailError}
-                errorMessage={emailError}
-                helperText={!emailError ? "We'll never share your email" : undefined}
+                invalid={!!demoEmailError}
+                errorMessage={demoEmailError}
+                helperText={!demoEmailError ? "Demo email validation" : undefined}
               />
             </div>
 
@@ -230,17 +241,17 @@ const DemoApp: React.FC = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-3">Name (Large Size)</h3>
               <InputField
-                value={nameValue}
+                value={demoNameValue}
                 onChange={(e) => {
-                  setNameValue(e.target.value);
-                  validateName(e.target.value);
+                  setDemoNameValue(e.target.value);
+                  validateDemoName(e.target.value);
                 }}
                 label="Full Name"
                 placeholder="Enter your full name"
                 variant="outlined"
                 size="lg"
-                invalid={!!nameError}
-                errorMessage={nameError}
+                invalid={!!demoNameError}
+                errorMessage={demoNameError}
               />
             </div>
 
