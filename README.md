@@ -1,42 +1,40 @@
-# React + TypeScript + Vite
+# Uzence UI Components
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React TypeScript component library built with Tailwind CSS and documented with Storybook.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Modern React Components**: Built with TypeScript for type safety
+- **Tailwind CSS Styling**: Utility-first CSS framework for consistent design
+- **Storybook Documentation**: Interactive component documentation
+- **Accessibility First**: WCAG compliant components with proper ARIA attributes
+- **Responsive Design**: Mobile-first approach with responsive breakpoints
+- **Scalable Architecture**: Well-organized folder structure for maintainability
 
-## Expanding the ESLint configuration
+## 📦 Components
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### InputField
+A versatile input component with multiple variants, sizes, and states.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Features:**
+- Multiple variants: `filled`, `outlined`, `ghost`
+- Three sizes: `sm`, `md`, `lg`
+- Input types: `text`, `password`, `email`, `number`
+- States: `disabled`, `invalid`, `loading`
+- Built-in clear button and password toggle
+- Helper text and error messaging
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### DataTable
+A feature-rich data table component with sorting, selection, and loading states.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Features:**
+- Generic TypeScript interface for type safety
+- Column sorting with visual indicators
+- Row selection (single/multiple) with select-all
+- Loading and empty states
+- Responsive design with horizontal scrolling
+- Full accessibility support
+- Custom cell rendering
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
