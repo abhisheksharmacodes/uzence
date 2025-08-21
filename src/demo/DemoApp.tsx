@@ -25,6 +25,7 @@ const sampleUsers: User[] = [
 const DemoApp: React.FC = () => {
   // InputField states
   const [searchValue, setSearchValue] = useState('');
+  const [searchValue1, setSearchValue1] = useState('');
   const [demoEmailValue, setDemoEmailValue] = useState('');
   const [demoEmailError, setDemoEmailError] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
@@ -32,12 +33,12 @@ const DemoApp: React.FC = () => {
   const [demoNameValue, setDemoNameValue] = useState('');
   const [demoNameError, setDemoNameError] = useState('');
   const [smallInputValue, setSmallInputValue] = useState('');
-  
+
   // Form validation states
   const [emailValue, setEmailValue] = useState('');
   const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
-  
+
   // DataTable states
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,9 +70,9 @@ const DemoApp: React.FC = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setFilteredUsers(currentData)
-  },[currentData])
+  }, [currentData])
 
   // Filter users based on search input
   useEffect(() => {
@@ -183,15 +184,15 @@ const DemoApp: React.FC = () => {
     e.preventDefault();
     validateName(nameValue);
     validateEmail(emailValue);
-    
+
     if (!nameError && !emailError && nameValue && emailValue) {
       alert(`Form submitted!\nName: ${nameValue}\nEmail: ${emailValue}`);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-full py-8">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Uzence UI Components Demo
@@ -204,14 +205,14 @@ const DemoApp: React.FC = () => {
         {/* InputField Demo Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">InputField Component</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Search Input */}
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-3">Search (Ghost Variant)</h3>
               <InputField
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                value={searchValue1}
+                onChange={(e) => setSearchValue1(e.target.value)}
                 label="Search Users"
                 placeholder="Search by name, email, or role..."
                 variant="ghost"
@@ -278,7 +279,7 @@ const DemoApp: React.FC = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-3">Disabled State</h3>
               <InputField
                 value="This field is disabled"
-                onChange={() => {}}
+                onChange={() => { }}
                 label="Disabled Field"
                 placeholder="Cannot edit this"
                 variant="outlined"

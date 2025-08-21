@@ -143,21 +143,21 @@ const InputField: React.FC<InputFieldProps> = ({
   );
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex justify-center items-center flex-col space-y-2">
       <label className={`${getLabelSizeStyles()} font-medium text-gray-700`}>
         {label}
       </label>
-      <div className="relative">
+      <div className="relative w-60">
         <input
           type={inputType}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
           disabled={disabled}
-          className={getVariantStyles()}
+          className={'w-60 pl-3 ' + getVariantStyles()}
         />
         {((showClearButton && value && !disabled) || type === 'password') && (
-          <div className="absolute inset-y-0 right-0 flex items-center space-x-1 pr-2">
+          <div className="absolute inset-y-0 right-0 flex items-center space-x-1 pr-4">
             {showClearButton && value && !disabled && (
               <button
                 type="button"
