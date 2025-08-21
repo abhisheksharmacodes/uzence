@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 
 interface InputFieldProps {
   value: string;
@@ -13,6 +13,9 @@ interface InputFieldProps {
   size?: 'sm' | 'md' | 'lg';
   type?: 'text' | 'password' | 'email' | 'number';
   showClearButton?: boolean;
+  theme?: 'light' | 'dark';
+  id?: string;
+  ariaLabel?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -27,10 +30,18 @@ const InputField: React.FC<InputFieldProps> = ({
   variant = 'outlined',
   size = 'md',
   type = 'text',
-  showClearButton = true
+  showClearButton = true,
+  theme = 'light',
+  id,
+  ariaLabel
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
+  const isDark = theme === 'dark';
+  const reactId = useId();
+  const inputId = id ?? `input-${reactId}`;
+  const helperId = `${inputId}-help`;
+  const errorId = `${inputId}-error`;
 
   React.useEffect(() => {
     if (type === 'password') {
@@ -87,28 +98,28 @@ const InputField: React.FC<InputFieldProps> = ({
     const hasIcons = (showClearButton && value && !disabled) || type === 'password';
     const rightPadding = hasIcons ? (size === 'sm' ? 'pr-8' : size === 'lg' ? 'pr-12' : 'pr-10') : '';
     const baseSizeStyles = getSizeStyles().replace(/px-\d+/, `pl-${size === 'sm' ? '2' : size === 'lg' ? '4' : '3'} ${rightPadding}`);
-    const baseStyles = `${baseSizeStyles} transition-colors`;
+    const baseStyles = `${baseSizeStyles} transition-colors ${isDark ? 'placeholder-gray-400' : 'placeholder-gray-400'}`;
     
     if (disabled) {
-      return `${baseStyles} text-gray-500 cursor-not-allowed ${
-        variant === 'filled' ? 'bg-gray-200 border-0' :
-        variant === 'ghost' ? 'bg-transparent border-0 border-b border-gray-200' :
-        'bg-gray-100 border border-gray-200 rounded-md shadow-sm'
+      return `${baseStyles} ${isDark ? 'text-gray-400' : 'text-gray-500'} cursor-not-allowed ${
+        variant === 'filled' ? (isDark ? 'bg-gray-700 border-0' : 'bg-gray-200 border-0') :
+        variant === 'ghost' ? (isDark ? 'bg-transparent border-0 border-b border-gray-600' : 'bg-transparent border-0 border-b border-gray-200') :
+        (isDark ? 'bg-gray-800 border border-gray-700 rounded-md shadow-sm' : 'bg-gray-100 border border-gray-200 rounded-md shadow-sm')
       }`;
     }
     
     if (invalid) {
-      return `${baseStyles} text-red-900 focus:outline-none ${
-        variant === 'filled' ? 'bg-red-50 border-0 focus:bg-red-100' :
-        variant === 'ghost' ? 'bg-transparent border-0 border-b-2 border-red-500 focus:border-red-600' :
-        'bg-white border border-red-500 rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500'
+      return `${baseStyles} ${isDark ? 'text-red-200' : 'text-red-900'} focus:outline-none ${
+        variant === 'filled' ? (isDark ? 'bg-red-900/20 border-0 focus:bg-red-900/30' : 'bg-red-50 border-0 focus:bg-red-100') :
+        variant === 'ghost' ? (isDark ? 'bg-transparent border-0 border-b-2 border-red-400 focus:border-red-300' : 'bg-transparent border-0 border-b-2 border-red-500 focus:border-red-600') :
+        (isDark ? 'bg-gray-900 border border-red-500 rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-100' : 'bg-white border border-red-500 rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500')
       }`;
     }
     
     return `${baseStyles} ${
-      variant === 'filled' ? 'bg-gray-50 border-0 focus:outline-none focus:bg-gray-100' :
-      variant === 'ghost' ? 'bg-transparent border-0 border-b border-gray-300 focus:outline-none focus:border-b-2 focus:border-blue-500' :
-      'bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+      variant === 'filled' ? (isDark ? 'bg-gray-800 border-0 focus:outline-none focus:bg-gray-700 text-gray-100' : 'bg-gray-50 border-0 focus:outline-none focus:bg-gray-100 text-gray-900') :
+      variant === 'ghost' ? (isDark ? 'bg-transparent border-0 border-b border-gray-600 focus:outline-none focus:border-b-2 focus:border-blue-400 text-gray-100' : 'bg-transparent border-0 border-b border-gray-300 focus:outline-none focus:border-b-2 focus:border-blue-500 text-gray-900') :
+      (isDark ? 'bg-gray-900 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-gray-100' : 'bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900')
     }`;
   };
   const handleClear = () => {
@@ -144,7 +155,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className="flex justify-center items-center flex-col space-y-2">
-      <label className={`${getLabelSizeStyles()} font-medium text-gray-700`}>
+      <label htmlFor={inputId} className={`${getLabelSizeStyles()} font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
         {label}
       </label>
       <div className="relative w-60">
@@ -154,6 +165,11 @@ const InputField: React.FC<InputFieldProps> = ({
           onChange={onChange}
           placeholder={placeholder}
           disabled={disabled}
+          id={inputId}
+          aria-label={ariaLabel}
+          aria-invalid={invalid || undefined}
+          aria-errormessage={invalid && errorMessage ? errorId : undefined}
+          aria-describedby={invalid && errorMessage ? errorId : helperText ? helperId : undefined}
           className={'w-60 pl-3 ' + getVariantStyles()}
         />
         {((showClearButton && value && !disabled) || type === 'password') && (
@@ -162,7 +178,9 @@ const InputField: React.FC<InputFieldProps> = ({
               <button
                 type="button"
                 onClick={handleClear}
-                className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors"
+                aria-label={`Clear ${label}`}
+                title={`Clear ${label}`}
+                className={`${isDark ? 'text-gray-400 hover:text-gray-200 focus:text-gray-200' : 'text-gray-400 hover:text-gray-600 focus:text-gray-600'} focus:outline-none transition-colors`}
                 tabIndex={-1}
               >
                 <ClearIcon />
@@ -172,7 +190,10 @@ const InputField: React.FC<InputFieldProps> = ({
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+                title={showPassword ? 'Hide password' : 'Show password'}
+                className={`${isDark ? 'text-gray-400 hover:text-gray-200 focus:text-gray-200' : 'text-gray-400 hover:text-gray-600 focus:text-gray-600'} focus:outline-none transition-colors`}
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -183,9 +204,9 @@ const InputField: React.FC<InputFieldProps> = ({
       </div>
       <div className={`min-h-[1.25rem] ${getHelperTextSizeStyles()}`}>
         {(invalid && errorMessage) || errorMessage ? (
-          <span className="text-red-600">{errorMessage}</span>
+          <span id={errorId} role="alert" aria-live="assertive" className={`${isDark ? 'text-red-400' : 'text-red-600'}`}>{errorMessage}</span>
         ) : helperText ? (
-          <span className="text-gray-500">{helperText}</span>
+          <span id={helperId} aria-live="polite" className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{helperText}</span>
         ) : null}
       </div>
     </div>
@@ -193,3 +214,4 @@ const InputField: React.FC<InputFieldProps> = ({
 };
 
 export default InputField;
+
