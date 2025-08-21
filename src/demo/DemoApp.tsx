@@ -31,6 +31,7 @@ const DemoApp: React.FC = () => {
   const [nameValue, setNameValue] = useState('');
   const [demoNameValue, setDemoNameValue] = useState('');
   const [demoNameError, setDemoNameError] = useState('');
+  const [smallInputValue, setSmallInputValue] = useState('');
   
   // Form validation states
   const [emailValue, setEmailValue] = useState('');
@@ -71,6 +72,23 @@ const DemoApp: React.FC = () => {
   useEffect(()=>{
     setFilteredUsers(currentData)
   },[currentData])
+
+  // Filter users based on search input
+  useEffect(() => {
+    const term = searchValue.trim().toLowerCase();
+    if (!term) {
+      setFilteredUsers(currentData);
+      return;
+    }
+    setFilteredUsers(
+      currentData.filter((u) =>
+        u.name.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term) ||
+        u.role.toLowerCase().includes(term) ||
+        u.status.toLowerCase().includes(term)
+      )
+    );
+  }, [searchValue, currentData]);
 
   // Demo name validation (isolated from form)
   const validateDemoName = (name: string) => {
@@ -193,7 +211,7 @@ const DemoApp: React.FC = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-3">Search (Ghost Variant)</h3>
               <InputField
                 value={searchValue}
-                onChange={() => {}}
+                onChange={(e) => setSearchValue(e.target.value)}
                 label="Search Users"
                 placeholder="Search by name, email, or role..."
                 variant="ghost"
@@ -274,8 +292,8 @@ const DemoApp: React.FC = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-3">Small Size</h3>
               <InputField
-                value=""
-                onChange={() => {}}
+                value={smallInputValue}
+                onChange={(e) => setSmallInputValue(e.target.value)}
                 label="Compact Input"
                 placeholder="Small input field"
                 variant="outlined"
