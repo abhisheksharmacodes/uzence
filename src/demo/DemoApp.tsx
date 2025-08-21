@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputField, DataTable } from '../components';
 import type { Column } from '../components';
 
@@ -21,14 +21,6 @@ const sampleUsers: User[] = [
   { id: 5, name: 'David Brown', email: 'david.brown@example.com', role: 'Admin', status: 'active', joinDate: '2023-05-12' },
 ];
 
-// Demo data that gets loaded after "Demo Loading"
-const demoUsers: User[] = [
-  { id: 6, name: 'Alice Cooper', email: 'alice.cooper@demo.com', role: 'Manager', status: 'active', joinDate: '2024-01-10' },
-  { id: 7, name: 'Bob Wilson', email: 'bob.wilson@demo.com', role: 'Developer', status: 'active', joinDate: '2024-01-15' },
-  { id: 8, name: 'Carol Martinez', email: 'carol.martinez@demo.com', role: 'Designer', status: 'pending', joinDate: '2024-01-20' },
-  { id: 9, name: 'Daniel Kim', email: 'daniel.kim@demo.com', role: 'Analyst', status: 'active', joinDate: '2024-01-25' },
-  { id: 10, name: 'Eva Rodriguez', email: 'eva.rodriguez@demo.com', role: 'Tester', status: 'inactive', joinDate: '2024-02-01' },
-];
 
 const DemoApp: React.FC = () => {
   // InputField states
@@ -44,23 +36,25 @@ const DemoApp: React.FC = () => {
   // DataTable states
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [allUsers, setAllUsers] = useState<User[]>(sampleUsers);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(sampleUsers);
-  const [demoLoaded, setDemoLoaded] = useState(false);
+  const [currentData, setCurrentData] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
   // Filter users based on search
   React.useEffect(() => {
+    console.log('useEffect triggered - currentData:', currentData, 'searchValue:', searchValue);
     if (searchValue.trim() === '') {
-      setFilteredUsers(allUsers);
+      console.log('Setting filteredUsers to currentData:', currentData);
+      setFilteredUsers(currentData);
     } else {
-      const filtered = allUsers.filter(user =>
+      const filtered = currentData.filter(user =>
         user.name.toLowerCase().includes(searchValue.toLowerCase()) ||
         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
         user.role.toLowerCase().includes(searchValue.toLowerCase())
       );
+      console.log('Setting filteredUsers to filtered:', filtered);
       setFilteredUsers(filtered);
     }
-  }, [searchValue, allUsers]);
+  }, [searchValue, currentData]);
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -73,6 +67,10 @@ const DemoApp: React.FC = () => {
       setEmailError('');
     }
   };
+
+  useEffect(()=>{
+    setFilteredUsers(currentData)
+  },[currentData])
 
   // Name validation
   const validateName = (name: string) => {
@@ -139,17 +137,15 @@ const DemoApp: React.FC = () => {
     },
   ];
 
-  // Simulate loading and add demo data
+  // Simulate loading and load sample data
   const handleLoadingDemo = () => {
-    if (demoLoaded) return; // Prevent loading demo data multiple times
-    
+    console.log('Loading demo started');
     setIsLoading(true);
     setTimeout(() => {
-      // Add demo users to existing data
-      const combinedUsers = [...allUsers, ...demoUsers];
-      setAllUsers(combinedUsers);
-      setDemoLoaded(true);
+      console.log('Setting currentData to:', sampleUsers);
+      setCurrentData(sampleUsers);
       setIsLoading(false);
+      console.log('Loading demo completed');
     }, 2000);
   };
 
@@ -326,22 +322,13 @@ const DemoApp: React.FC = () => {
                 onClick={handleLoadingDemo}
                 className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >
-                Demo Loading
+                Show Loading
               </button>
               <button
-                onClick={() => setFilteredUsers([])}
+                onClick={() => setCurrentData([])}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
               >
                 Clear Data
-              </button>
-              <button
-                onClick={() => {
-                  setAllUsers(sampleUsers);
-                  setSelectedUsers([]);
-                }}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-              >
-                Reset Data
               </button>
             </div>
           </div>
@@ -374,9 +361,8 @@ const DemoApp: React.FC = () => {
               <li>• <strong>Sorting:</strong> Click column headers to sort (ID, Name, Email, Role, Status, Join Date)</li>
               <li>• <strong>Selection:</strong> Use checkboxes to select individual rows or select all</li>
               <li>• <strong>Custom Rendering:</strong> Status badges and formatted dates</li>
-              <li>• <strong>Demo Loading:</strong> Click "Demo Loading" to add 5 new demo users after 2 seconds</li>
+              <li>• <strong>Loading State:</strong> Click "Show Loading" to see loading spinner</li>
               <li>• <strong>Empty State:</strong> Click "Clear Data" to see empty state</li>
-              <li>• <strong>Reset Data:</strong> Click "Reset Data" to restore original 5 users</li>
               <li>• <strong>Filtering:</strong> Use the search input above to filter data</li>
               <li>• <strong>Responsive:</strong> Table scrolls horizontally on smaller screens</li>
               <li>• <strong>Accessibility:</strong> Full keyboard navigation and screen reader support</li>
